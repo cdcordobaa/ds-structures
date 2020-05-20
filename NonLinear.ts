@@ -45,6 +45,5 @@ myAVLInstance.insert(student2);
 myAVLInstance.insert(student3);
 myAVLInstance.insert(student4);
 myAVLInstance.insert(student5);
-myAVLInstance.insert(student6);
 
 myAVLInstance.prettyPrint();
