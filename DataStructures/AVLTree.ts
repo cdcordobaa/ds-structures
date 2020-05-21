@@ -68,7 +68,9 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
     }
 
     let nodeToInsert = this.find(dataToInsert, this.root);
-    console.log("returne", nodeToInsert.data.toString());
+    console.log(
+      `mounting ${dataToInsert} into node ${nodeToInsert.data.toString()}`
+    );
     let newNode: AVLNode<T> = undefined;
 
     if (nodeToInsert.data.compareTo(dataToInsert) === 0) {
@@ -141,7 +143,7 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
 
     if (lefth > righth) {
       const left_lefth = node.left.left ? node.left.left.heigth : 0;
-      const left_righth = node.left.right ? node.right.heigth : 0;
+      const left_righth = node.left.right ? node.left.right.heigth : 0;
 
       if (left_lefth > left_righth) {
         rotationCase = "LL";
@@ -149,8 +151,8 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
         rotationCase = "RL";
       }
     } else {
-      const rigth_lefth = node.right.left ? node.left.left.heigth : 0;
-      const rigth_righth = node.right.right ? node.right.heigth : 0;
+      const rigth_lefth = node.right.left ? node.right.left.heigth : 0;
+      const rigth_righth = node.right.right ? node.right.right.heigth : 0;
 
       if (rigth_righth > rigth_lefth) {
         rotationCase = "RR";
@@ -162,17 +164,21 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
     switch (rotationCase) {
       case "LL": {
         this.rotateRigth(node.left);
+        break;
       }
       case "RR": {
         this.rotateLeft(node.right);
+        break;
       }
       case "LR": {
         this.rotateRigth(node.right.left);
         this.rotateLeft(node.right);
+        break;
       }
-      case "LR": {
+      case "RL": {
         this.rotateLeft(node.left.right);
         this.rotateRigth(node.left);
+        break;
       }
       default:
         break;
@@ -183,7 +189,7 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
     let temporaryRigthSubTree = pivot.right;
     pivot.right = pivot.parent;
     pivot.parent = pivot.parent.parent;
-    if (pivot.parent !== undefined) {
+    if (pivot.parent) {
       if (pivot.data.compareTo(pivot.parent.data) === -1) {
         pivot.parent.left = pivot;
       } else {
@@ -194,14 +200,17 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
     }
     pivot.right.parent = pivot;
     pivot.right.left = temporaryRigthSubTree;
-    temporaryRigthSubTree.parent = pivot.right;
+    if (temporaryRigthSubTree) {
+      temporaryRigthSubTree.parent = pivot.right;
+    }
+    this.updateHeigth(pivot.right);
   };
 
   rotateLeft = (pivot: AVLNode<T>) => {
     let temporaryRigthSubTree = pivot.left;
     pivot.left = pivot.parent;
     pivot.parent = pivot.parent.parent;
-    if (pivot.parent !== null) {
+    if (pivot.parent) {
       if (pivot.data.compareTo(pivot.parent.data) === -1) {
         pivot.parent.left = pivot;
       } else {
@@ -212,7 +221,10 @@ class AVLTree<T extends Comparable<T>> implements IAVLTree<T> {
     }
     pivot.left.parent = pivot;
     pivot.left.right = temporaryRigthSubTree;
-    temporaryRigthSubTree.parent = pivot.left;
+    if (temporaryRigthSubTree) {
+      temporaryRigthSubTree.parent = pivot.left;
+    }
+    this.updateHeigth(pivot.left);
   };
 
   next = (node: AVLNode<T>) => {
